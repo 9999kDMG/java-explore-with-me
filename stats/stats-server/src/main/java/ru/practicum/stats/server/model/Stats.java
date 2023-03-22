@@ -24,7 +24,7 @@ public class Stats {
     @Column(name = "app", nullable = false, length = 30)
     private String app;
 
-    @Column(name = "uri", nullable = false, length = 20)
+    @Column(name = "uri", nullable = false, length = 2000)
     private String uri;
 
     @Column(name = "ip", nullable = false, length = 15)
