@@ -16,3 +16,13 @@ spring:
     url: jdbc:postgresql://localhost:9091/stats
     username: postgres
     password: postgres
+---
+spring:
+  config:
+    activate:
+      on-profile: ci,test
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:ewm
+    username: test
+    password: test
