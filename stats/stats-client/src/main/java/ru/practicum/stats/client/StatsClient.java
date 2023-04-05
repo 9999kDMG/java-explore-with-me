@@ -25,9 +25,8 @@ import java.util.List;
 @Service
 public class StatsClient {
     private final String applicationName;
-    private final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     protected final RestTemplate rest;
-
 
     @Autowired
     public StatsClient(@Value("http://stats-server:9090") String serverUrl,
@@ -63,8 +62,8 @@ public class StatsClient {
 
         MultiValueMap<String, String> myParams = new LinkedMultiValueMap<>();
 
-        myParams.add("start", start.format(DATE_TIME_FORMATTER));
-        myParams.add("end", end.format(DATE_TIME_FORMATTER));
+        myParams.add("start", start.format(formatter));
+        myParams.add("end", end.format(formatter));
 
         for (String uri : uris) {
             myParams.add("uris", uri);

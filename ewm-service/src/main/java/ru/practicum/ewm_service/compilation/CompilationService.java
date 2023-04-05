@@ -42,7 +42,7 @@ public class CompilationService {
             compilation.setEvents(eventRepository.findAllByIdIn(updateRequest.getEvents()));
         }
 
-        if(updateRequest.getPinned() != null) {
+        if (updateRequest.getPinned() != null) {
             compilation.setPinned(updateRequest.getPinned());
         }
 
@@ -92,5 +92,4 @@ public class CompilationService {
         return compilationRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("competition id N%s", id)));
     }
-
 }

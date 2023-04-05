@@ -4,7 +4,6 @@ import ru.practicum.ewm_service.compilation.dto.CompilationDto;
 import ru.practicum.ewm_service.compilation.dto.NewCompilationDto;
 import ru.practicum.ewm_service.event.dto.EventShortDto;
 
-import java.util.HashSet;
 import java.util.List;
 
 public class CompilationMapper {
