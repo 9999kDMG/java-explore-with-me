@@ -4,12 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ru.practicum.ewm_service.category.CategoryMapper;
 import ru.practicum.ewm_service.exception.ConflictException;
 import ru.practicum.ewm_service.exception.NotFoundException;
 import ru.practicum.ewm_service.user.dto.UserDto;
 import ru.practicum.ewm_service.utils.Pagination;
-
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,7 +25,7 @@ public class UserService {
                     .map(UserMapper::toUserDto)
                     .collect(Collectors.toList());
         }
-        List<User> users = userRepository.findByIdIn(ids,pageable);
+        List<User> users = userRepository.findByIdIn(ids, pageable);
         return users.stream().map(UserMapper::toUserDto).collect(Collectors.toList());
     }
 
@@ -51,5 +49,4 @@ public class UserService {
         return userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("user id N%s", id)));
     }
-
 }

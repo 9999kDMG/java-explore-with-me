@@ -11,5 +11,4 @@ public class Pagination {
         }
         return PageRequest.of(from, size);
     }
-
 }

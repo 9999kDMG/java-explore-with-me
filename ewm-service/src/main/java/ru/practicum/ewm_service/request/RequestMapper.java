@@ -11,5 +11,4 @@ public class RequestMapper {
                 .created(request.getCreated())
                 .build();
     }
-
 }

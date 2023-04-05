@@ -36,12 +36,12 @@ public class EventService {
     private final StatsClient statsClient;
     private final RequestRepository requestRepository;
 
-    private final int TIME_LIMIT_OF_REQUEST = 2;
-    private final int TIME_LIMIT_OF_UPDATE = 1;
+    private final int timeLimitOfRequest = 2;
+    private final int timeLimitOfUpdate = 1;
 
     //methods for private part of controller
     public EventFullDto postEventByUser(Integer userId, NewEventDto newEventDto) {
-        if (newEventDto.getEventDate().isBefore(LocalDateTime.now().plusHours(TIME_LIMIT_OF_REQUEST))) {
+        if (newEventDto.getEventDate().isBefore(LocalDateTime.now().plusHours(timeLimitOfRequest))) {
             throw new ConflictException("incorrect event time");
         }
 
@@ -94,7 +94,7 @@ public class EventService {
         Event event = getEventOrThrow(eventId);
 
         if (updateEventsUserRequest.getEventDate() != null
-                && updateEventsUserRequest.getEventDate().isBefore(LocalDateTime.now().plusHours(TIME_LIMIT_OF_REQUEST))) {
+                && updateEventsUserRequest.getEventDate().isBefore(LocalDateTime.now().plusHours(timeLimitOfRequest))) {
             throw new ConflictException("incorrect event time");
         }
 
@@ -155,6 +155,7 @@ public class EventService {
     public List<RequestDto> getRequestsByUserEvent(Integer userId, Integer eventId) {
         userService.getUserOrThrow(userId);
         getEventOrThrow(eventId);
+
         return requestRepository.findByEventInitiatorIdAndEventId(userId, eventId)
                 .stream()
                 .map(RequestMapper::toRequestDto)
@@ -189,8 +190,8 @@ public class EventService {
                 requestRepository.saveAll(rejectedRequest);
                 result.setConfirmedRequests(List.of());
                 result.setRejectedRequests(rejectedRequest.isEmpty() ? List.of() : rejectedRequest
-                        .stream().
-                        map(RequestMapper::toRequestDto)
+                        .stream()
+                        .map(RequestMapper::toRequestDto)
                         .collect(Collectors.toList()));
                 return result;
             case CONFIRMED:
@@ -212,14 +213,15 @@ public class EventService {
                 eventRepository.save(event);
 
                 result.setConfirmedRequests(confirmedRequest.isEmpty() ? List.of() : confirmedRequest
-                        .stream().
-                        map(RequestMapper::toRequestDto)
+                        .stream()
+                        .map(RequestMapper::toRequestDto)
                         .collect(Collectors.toList()));
                 result.setRejectedRequests(rejectedRequest.isEmpty() ? List.of() : rejectedRequest
-                        .stream().
-                        map(RequestMapper::toRequestDto)
+                        .stream()
+                        .map(RequestMapper::toRequestDto)
                         .collect(Collectors.toList()));
         }
+
         return result;
     }
 
@@ -261,7 +263,7 @@ public class EventService {
 
     public EventFullDto patchEventByAdmin(Integer eventId, UpdateEventsAdminRequest updateRequest) {
         if (updateRequest.getEventDate() != null &&
-                updateRequest.getEventDate().isBefore(LocalDateTime.now().plusHours(TIME_LIMIT_OF_UPDATE))) {
+                updateRequest.getEventDate().isBefore(LocalDateTime.now().plusHours(timeLimitOfUpdate))) {
             throw new ConflictException("Incorrect event time");
         }
         Event event = getEventOrThrow(eventId);
