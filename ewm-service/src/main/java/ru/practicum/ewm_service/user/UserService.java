@@ -25,8 +25,11 @@ public class UserService {
                     .map(UserMapper::toUserDto)
                     .collect(Collectors.toList());
         }
-        List<User> users = userRepository.findByIdIn(ids, pageable);
-        return users.stream().map(UserMapper::toUserDto).collect(Collectors.toList());
+
+        return userRepository.findByIdIn(ids, pageable)
+                .stream()
+                .map(UserMapper::toUserDto)
+                .collect(Collectors.toList());
     }
 
     public UserDto create(UserDto userDto) {

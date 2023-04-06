@@ -88,15 +88,10 @@ public class EventService {
 
     public EventFullDto patchEventByUser(Integer userId,
                                          Integer eventId,
-                                         UpdateEventsUserRequest updateEventsUserRequest) {
+                                         UpdateEventsUserRequest updateRequest) {
 
         User user = userService.getUserOrThrow(userId);
         Event event = getEventOrThrow(eventId);
-
-        if (updateEventsUserRequest.getEventDate() != null
-                && updateEventsUserRequest.getEventDate().isBefore(LocalDateTime.now().plusHours(timeLimitOfRequest))) {
-            throw new ConflictException("incorrect event time");
-        }
 
         if (!user.equals(event.getInitiator())) {
             throw new NotFoundException(String.format("the event id N%s has a different owner", eventId));
@@ -104,32 +99,21 @@ public class EventService {
         if (EventState.PUBLISHED.equals(event.getState())) {
             throw new ConflictException("you cannot change a confirmed event");
         }
-        if (updateEventsUserRequest.getAnnotation() != null) {
-            event.setAnnotation(updateEventsUserRequest.getAnnotation());
-        }
-        if (updateEventsUserRequest.getCategory() != null) {
-            Category category = categoryService.getCategoryOrThrow(updateEventsUserRequest.getCategory());
-            event.setCategory(category);
-        }
-        if (updateEventsUserRequest.getDescription() != null) {
-            event.setDescription(updateEventsUserRequest.getDescription());
-        }
-        if (updateEventsUserRequest.getEventDate() != null) {
-            event.setEventDate(updateEventsUserRequest.getEventDate());
-        }
-        if (updateEventsUserRequest.getLocation() != null) {
-            event.setLocation(updateEventsUserRequest.getLocation());
-        }
-        if (updateEventsUserRequest.getPaid() != null) {
-            event.setPaid(updateEventsUserRequest.getPaid());
-        }
-        if (updateEventsUserRequest.getParticipantLimit() != null) {
-            event.setParticipantLimit(updateEventsUserRequest.getParticipantLimit());
-        }
-        if (updateEventsUserRequest.getRequestModeration() != null) {
-            event.setRequestModeration(updateEventsUserRequest.getRequestModeration());
-        }
-        StateActionUser stateActionUser = updateEventsUserRequest.getStateAction();
+        setEventParam(
+                updateRequest.getAnnotation(),
+                updateRequest.getCategory(),
+                updateRequest.getDescription(),
+                updateRequest.getEventDate(),
+                updateRequest.getLocation(),
+                updateRequest.getPaid(),
+                updateRequest.getParticipantLimit(),
+                updateRequest.getRequestModeration(),
+                updateRequest.getTitle(),
+                event,
+                timeLimitOfRequest
+        );
+
+        StateActionUser stateActionUser = updateRequest.getStateAction();
         if (stateActionUser == null) {
             event.setState(EventState.PENDING);
         }
@@ -139,9 +123,6 @@ public class EventService {
             } else if (StateActionUser.SEND_TO_REVIEW.equals(stateActionUser)) {
                 event.setState(EventState.PENDING);
             }
-        }
-        if (updateEventsUserRequest.getTitle() != null) {
-            event.setTitle(updateEventsUserRequest.getTitle());
         }
 
         EventFullDto eventFullDto = EventMapper.toEventFullDto(eventRepository.save(event));
@@ -280,42 +261,19 @@ public class EventService {
             }
         }
 
-        if (updateRequest.getAnnotation() != null) {
-            event.setAnnotation(updateRequest.getAnnotation());
-        }
-
-        if (updateRequest.getCategory() != null) {
-            Category category = categoryService.getCategoryOrThrow(updateRequest.getCategory());
-            event.setCategory(category);
-        }
-
-        if ((updateRequest.getDescription() != null)) {
-            event.setDescription(updateRequest.getDescription());
-        }
-
-        if (updateRequest.getEventDate() != null) {
-            event.setEventDate(updateRequest.getEventDate());
-        }
-
-        if (updateRequest.getLocation() != null) {
-            event.setLocation(updateRequest.getLocation());
-        }
-
-        if (updateRequest.getPaid() != null) {
-            event.setPaid(updateRequest.getPaid());
-        }
-
-        if (updateRequest.getParticipantLimit() != null) {
-            event.setParticipantLimit(updateRequest.getParticipantLimit());
-        }
-
-        if (updateRequest.getRequestModeration() != null) {
-            event.setRequestModeration(updateRequest.getRequestModeration());
-        }
-
-        if (updateRequest.getTitle() != null) {
-            event.setTitle(updateRequest.getTitle());
-        }
+        setEventParam(
+                updateRequest.getAnnotation(),
+                updateRequest.getCategory(),
+                updateRequest.getDescription(),
+                updateRequest.getEventDate(),
+                updateRequest.getLocation(),
+                updateRequest.getPaid(),
+                updateRequest.getParticipantLimit(),
+                updateRequest.getRequestModeration(),
+                updateRequest.getTitle(),
+                event,
+                timeLimitOfUpdate
+        );
 
         EventFullDto eventFullDto = EventMapper.toEventFullDto(eventRepository.save(event));
 
@@ -441,6 +399,43 @@ public class EventService {
                     eventShortDto.setViews(views.getOrDefault(event.getId(), 0L));
                     return eventShortDto;
                 }).collect(Collectors.toList());
+    }
+
+    private void throwIfTimeIsOutOfLimit(LocalDateTime eventDate, int limit) {
+        if (eventDate != null && eventDate.isBefore(LocalDateTime.now().plusHours(limit))) {
+            throw new ConflictException("incorrect event time");
+        }
+    }
+
+    private void setEventParam(String annotation, Integer categoryId, String description, LocalDateTime eventDate,
+                               Location location, Boolean paid, Integer participantLimit, Boolean requestModeration,
+                               String title, Event event, int limit) {
+        if (annotation != null) {
+            event.setAnnotation(annotation);
+        }
+        if (categoryId != null) {
+            Category category = categoryService.getCategoryOrThrow(categoryId);
+            event.setCategory(category);
+        }
+        if (description != null) {
+            event.setDescription(description);
+        }
+        throwIfTimeIsOutOfLimit(eventDate, limit);
+        if (location != null) {
+            event.setLocation(location);
+        }
+        if (paid != null) {
+            event.setPaid(paid);
+        }
+        if (participantLimit != null) {
+            event.setParticipantLimit(participantLimit);
+        }
+        if (requestModeration != null) {
+            event.setRequestModeration(requestModeration);
+        }
+        if (title != null) {
+            event.setTitle(title);
+        }
     }
 
     private List<EventFullDto> createEventFullDtoWithView(List<Event> events) {
