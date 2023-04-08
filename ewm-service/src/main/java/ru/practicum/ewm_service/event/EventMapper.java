@@ -1,10 +1,14 @@
 package ru.practicum.ewm_service.event;
 
 import ru.practicum.ewm_service.category.CategoryMapper;
+import ru.practicum.ewm_service.comment.CommentMapper;
 import ru.practicum.ewm_service.event.dto.EventFullDto;
 import ru.practicum.ewm_service.event.dto.EventShortDto;
 import ru.practicum.ewm_service.event.dto.NewEventDto;
 import ru.practicum.ewm_service.user.UserMapper;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class EventMapper {
     private static final Boolean DEFAULT_PAID = false;
@@ -43,6 +47,10 @@ public class EventMapper {
                 .state(event.getState())
                 .title(event.getTitle())
                 .confirmedRequests(event.getConfirmedRequests())
+                .comments(event.getComments() != null
+                        ? event.getComments()
+                        .stream().map(CommentMapper::toCommentShortDto).collect(Collectors.toList())
+                        : List.of())
                 .build();
     }
 

@@ -2,10 +2,12 @@ package ru.practicum.ewm_service.event;
 
 import lombok.*;
 import ru.practicum.ewm_service.category.Category;
+import ru.practicum.ewm_service.comment.Comment;
 import ru.practicum.ewm_service.user.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -52,19 +54,23 @@ public class Event {
     @Column(name = "participant_limit", nullable = false)
     private Integer participantLimit;
 
-    @Column(name = "PUBLISHED_ON", nullable = false)
+    @Column(name = "published_on", nullable = false)
     private LocalDateTime publishedOn;
 
-    @Column(name = "REQUEST_MODERATION", nullable = false)
+    @Column(name = "request_moderation", nullable = false)
     private Boolean requestModeration;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "STATE", length = 100, nullable = false)
+    @Column(name = "state", length = 100, nullable = false)
     private EventState state;
 
-    @Column(name = "TITLE", length = 120, nullable = false)
+    @Column(name = "title", length = 120, nullable = false)
     private String title;
 
-    @Column(name = "CONFIRMED_REQUESTS")
+    @Column(name = "confirmed_requests")
     private Integer confirmedRequests;
+
+    @OneToMany
+    @JoinColumn(name = "event_id")
+    private List<Comment> comments;
 }
