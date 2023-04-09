@@ -19,7 +19,7 @@ public class CompilationController {
     @PostMapping("/admin/compilations")
     @ResponseStatus(HttpStatus.CREATED)
     public CompilationDto postCompilation(@RequestBody @Valid NewCompilationDto newCompilationDto) {
-        return compilationService.postCompilationByAdmin(newCompilationDto);
+        return compilationService.createCompilationByAdmin(newCompilationDto);
     }
 
     @PatchMapping("/admin/compilations/{compId}")

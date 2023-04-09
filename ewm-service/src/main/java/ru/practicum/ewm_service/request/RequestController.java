@@ -16,7 +16,7 @@ public class RequestController {
     @ResponseStatus(HttpStatus.CREATED)
     public RequestDto postRequest(@PathVariable(name = "userId") int userId,
                                   @RequestParam(name = "eventId") int eventId) {
-        return requestService.postRequestByUser(userId, eventId);
+        return requestService.updateRequestByUser(userId, eventId);
     }
 
     @GetMapping

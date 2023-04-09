@@ -21,7 +21,7 @@ public class CommentController {
     public CommentDto postComment(@NotNull @RequestParam(name = "eventId") Integer eventId,
                                   @RequestBody @Valid NewCommentDto newComment,
                                   @PathVariable Integer userId) {
-        return commentService.postCommentByUser(userId, eventId, newComment);
+        return commentService.createCommentByUser(userId, eventId, newComment);
     }
 
     @PatchMapping("/users/{userId}/comments/{commentId}")
@@ -42,7 +42,7 @@ public class CommentController {
     @GetMapping("/users/{userId}/comments/{commentId}")
     @ResponseStatus(HttpStatus.OK)
     public CommentDto getUserComment(@PathVariable Integer userId,
-                                            @PathVariable Integer commentId) {
+                                     @PathVariable Integer commentId) {
         return commentService.getUserComment(userId, commentId);
     }
 

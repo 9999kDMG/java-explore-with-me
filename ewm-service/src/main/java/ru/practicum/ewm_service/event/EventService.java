@@ -40,7 +40,7 @@ public class EventService {
     private final int timeLimitOfUpdate = 1;
 
     //methods for private part of controller
-    public EventFullDto postEventByUser(Integer userId, NewEventDto newEventDto) {
+    public EventFullDto createEventByUser(Integer userId, NewEventDto newEventDto) {
         if (newEventDto.getEventDate().isBefore(LocalDateTime.now().plusHours(timeLimitOfRequest))) {
             throw new ConflictException("incorrect event time");
         }
@@ -86,9 +86,9 @@ public class EventService {
         return createEventFullDtoWithView(events);
     }
 
-    public EventFullDto patchEventByUser(Integer userId,
-                                         Integer eventId,
-                                         UpdateEventsUserRequest updateRequest) {
+    public EventFullDto updateEventByUser(Integer userId,
+                                          Integer eventId,
+                                          UpdateEventsUserRequest updateRequest) {
 
         User user = userService.getUserOrThrow(userId);
         Event event = getEventOrThrow(eventId);
@@ -242,7 +242,7 @@ public class EventService {
         return createEventFullDtoWithView(events);
     }
 
-    public EventFullDto patchEventByAdmin(Integer eventId, UpdateEventsAdminRequest updateRequest) {
+    public EventFullDto updateEventByAdmin(Integer eventId, UpdateEventsAdminRequest updateRequest) {
         if (updateRequest.getEventDate() != null &&
                 updateRequest.getEventDate().isBefore(LocalDateTime.now().plusHours(timeLimitOfUpdate))) {
             throw new ConflictException("Incorrect event time");

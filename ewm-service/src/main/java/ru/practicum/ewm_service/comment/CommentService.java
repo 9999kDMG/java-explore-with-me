@@ -12,7 +12,6 @@ import ru.practicum.ewm_service.exception.NotFoundException;
 import ru.practicum.ewm_service.user.User;
 import ru.practicum.ewm_service.user.UserService;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -25,19 +24,13 @@ public class CommentService {
     private final EventService eventService;
     private final CommentRepository commentRepository;
 
-    public CommentDto postCommentByUser(Integer userId, Integer eventId, NewCommentDto newComment) {
+    public CommentDto createCommentByUser(Integer userId, Integer eventId, NewCommentDto newComment) {
         if (newComment.getText() == null) {
             throw new BadRequestException("the comment does not contain text");
         }
         User user = userService.getUserOrThrow(userId);
         Event event = eventService.getEventOrThrow(eventId);
-        Comment comment = Comment.builder()
-                .text(newComment.getText())
-                .user(user)
-                .created(LocalDateTime.now())
-                .state(CommentState.PENDING)
-                .event(event)
-                .build();
+        Comment comment = CommentMapper.toNewComment(newComment, user, event);
 
         return CommentMapper.toCommentDto(commentRepository.save(comment));
     }

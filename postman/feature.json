@@ -991,7 +991,7 @@
       "response": []
     },
     {
-      "name": "New Request",
+      "name": "Получение события с комментариями",
       "event": [
         {
           "listen": "prerequest",
@@ -1012,6 +1012,8 @@
               "        event = await api.publishEvent(event.id);\r",
               "        const comment = await api.addComment(user.id, event.id, {text: 'Комментарий'});\r",
               "        await api.updateCommentState(comment.id, \"APPROVED\");\r",
+              "        const comment2 = await api.addComment(user.id, event.id, {text: 'Комментарий'});\r",
+              "        await api.updateCommentState(comment2.id, \"REJECTED\");\r",
               "\r",
               "        pm.collectionVariables.set(\"userId\", user.id);\r",
               "        pm.collectionVariables.set(\"eventId\", event.id);\r",
@@ -1073,6 +1075,7 @@
               "\r",
               "pm.test(\"Данные в ответе должны соответствовать данным в запросе\", function () {\r",
               "    pm.expect(source.text).equal(founded.text);\r",
+              "    pm.expect(source.id).equal(founded.id);\r",
               "})"
             ],
             "type": "text/javascript"
