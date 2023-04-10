@@ -23,7 +23,7 @@ public class RequestService {
     private final EventService eventService;
     private final EventRepository eventRepository;
 
-    public RequestDto postRequestByUser(int userId, int eventId) {
+    public RequestDto updateRequestByUser(int userId, int eventId) {
         User user = userService.getUserOrThrow(userId);
         Event event = eventService.getEventOrThrow(eventId);
 

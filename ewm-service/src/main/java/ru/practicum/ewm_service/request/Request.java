@@ -16,24 +16,24 @@ import java.time.LocalDateTime;
 @Builder
 
 @Entity
-@Table(name = "REQUESTS")
+@Table(name = "requests")
 public class Request {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "REQUEST_ID")
+    @Column(name = "request_id")
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "EVENT_ID")
+    @JoinColumn(name = "event_id")
     private Event event;
 
     @ManyToOne
-    @JoinColumn(name = "REQUESTER_ID")
+    @JoinColumn(name = "requester_id")
     private User requester;
 
-    @Column(name = "STATUS")
+    @Column(name = "status")
     private RequestStatus status;
 
-    @Column(name = "CREATED")
+    @Column(name = "created")
     private LocalDateTime created;
 }

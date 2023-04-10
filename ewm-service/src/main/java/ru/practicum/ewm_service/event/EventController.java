@@ -24,7 +24,7 @@ public class EventController {
     @ResponseStatus(HttpStatus.CREATED)
     public EventFullDto postEvent(@PathVariable Integer userId,
                                   @RequestBody @Valid NewEventDto newEventDto) {
-        return eventService.postEventByUser(userId, newEventDto);
+        return eventService.createEventByUser(userId, newEventDto);
     }
 
     @GetMapping("/users/{userId}/events/{eventId}")
@@ -45,7 +45,7 @@ public class EventController {
                                    @PathVariable(name = "eventId") Integer eventId,
                                    @RequestBody(required = false)
                                    @Valid UpdateEventsUserRequest updateEventsUserRequest) {
-        return eventService.patchEventByUser(userId, eventId, updateEventsUserRequest);
+        return eventService.updateEventByUser(userId, eventId, updateEventsUserRequest);
     }
 
     @GetMapping("/users/{userId}/events/{eventId}/requests")
@@ -84,7 +84,7 @@ public class EventController {
     public EventFullDto patchEvent(@PathVariable(name = "eventId") Integer eventId,
                                    @RequestBody(required = false)
                                    @Valid UpdateEventsAdminRequest updateEventsAdminRequest) {
-        return eventService.patchEventByAdmin(eventId, updateEventsAdminRequest);
+        return eventService.updateEventByAdmin(eventId, updateEventsAdminRequest);
     }
 
     //public part

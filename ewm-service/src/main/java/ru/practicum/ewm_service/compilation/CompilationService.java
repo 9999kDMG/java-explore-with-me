@@ -25,7 +25,7 @@ public class CompilationService {
     private final EventRepository eventRepository;
     private final EventService eventService;
 
-    public CompilationDto postCompilationByAdmin(NewCompilationDto newCompilationDto) {
+    public CompilationDto createCompilationByAdmin(NewCompilationDto newCompilationDto) {
         Set<Event> events = eventRepository.findAllByIdIn(newCompilationDto.getEvents());
         List<EventShortDto> eventShortDtos = eventService.createEventShortDtoWithView(new ArrayList<>(events));
 
